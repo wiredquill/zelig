@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Copy the configuration and the script
 COPY ../../configs/log_messages.json /app/log_messages.json
-COPY ../../database.py /app/database.py
+COPY ../../app/database.py /app/database.py
 
 # Install necessary Python packages
 RUN pip install flask
