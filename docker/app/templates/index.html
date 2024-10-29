@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pod Control Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .pod { border: 1px solid #ddd; padding: 10px; margin: 10px; }
+        .status { font-weight: bold; }
+        .btn { padding: 5px 10px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Pod Control Dashboard</h1>
+    <div id="pods-container">
+        {% for pod_name, state in pods.items() %}
+            <div class="pod">
+                <h2>{{ pod_name }}</h2>
+                <p>Status: <span class="status" id="{{ pod_name }}-status">{{ state.status }}</span></p>
+                <p>HTTP Mode: <span id="{{ pod_name }}-http-mode">{{ state.http_mode }}</span></p>
+                <button class="btn" onclick="setMode('{{ pod_name }}', 'running')">Set to Running</button>
+                <button class="btn" onclick="setMode('{{ pod_name }}', 'error')">Set to Error</button>
+                <button class="btn" onclick="setMode('{{ pod_name }}', 'dead')">Set to Dead</button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function setMode(pod_name, mode) {
+            fetch(`/set_mode/${pod_name}/${mode}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        document.getElementById(`${pod_name}-status`).innerText = mode;
+                        if (mode === 'running') {
+                            document.getElementById(`${pod_name}-http-mode`).innerText = '200 OK';
+                        } else if (mode === 'error') {
+                            document.getElementById(`${pod_name}-http-mode`).innerText = '500 Internal Server Error';
+                        } else {
+                            document.getElementById(`${pod_name}-http-mode`).innerText = 'No Response';
+                        }
+                    } else {
+                        alert(data.error);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

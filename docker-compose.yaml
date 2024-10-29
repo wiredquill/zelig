@@ -1,0 +1,34 @@
+version: '3'
+services:
+  database:
+    build:
+      context: .
+      dockerfile: docker/database/Dockerfile
+    container_name: database_pod
+    ports:
+      - "5001:5001"  # Expose for local testing (optional)
+    environment:
+      - POD_NAME=Database
+
+  point-of-sale:
+    build:
+      context: .
+      dockerfile: docker/point-of-sale/Dockerfile
+    container_name: pos_pod
+    ports:
+      - "5002:5002"  # Expose for local testing (optional)
+    environment:
+      - POD_NAME=Point-of-Sale
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    container_name: frontend_pod
+    ports:
+      - "5000:5000"  # Expose for access to the control UI
+    environment:
+      - POD_NAME=Frontend
+    depends_on:
+      - database
+      - point-of-sale
