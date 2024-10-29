@@ -1,0 +1,32 @@
+{
+    "Database": {
+      "ascii_art": "Database server booting",
+      "success_message": "database record updated",
+      "error_message": "error writing to database",
+      "http": {
+        "success_response": "Database service running smoothly",
+        "error_response": "Database service failed",
+        "dead_mode": true
+      }
+    },
+    "POS": {
+      "ascii_art": "POS server booting",
+      "success_message": "transaction processed",
+      "error_message": "error processing transaction",
+      "http": {
+        "success_response": "POS service online",
+        "error_response": "POS service encountered an issue",
+        "dead_mode": true
+      }
+    },
+    "Frontend": {
+      "ascii_art": "Frontend server booting",
+      "success_message": "page loaded successfully",
+      "error_message": "error loading page",
+      "http": {
+        "success_response": "Frontend operational",
+        "error_response": "Frontend service down",
+        "dead_mode": true
+      }
+    }
+  }
