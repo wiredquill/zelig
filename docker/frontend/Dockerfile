@@ -6,8 +6,8 @@ WORKDIR /app
 
 # Copy the configuration, script, and HTML template files
 COPY ../../configs/log_messages.json /app/log_messages.json
-COPY frontend.py /app/frontend.py
-COPY templates /app/templates
+COPY ../../frontend.py /app/frontend.py
+COPY ../../templates /app/templates
 
 # Install necessary Python packages
 RUN pip install flask
