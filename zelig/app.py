@@ -83,11 +83,13 @@ def start_config_watcher():
 @app.route('/')
 def root():
     global error_mode
-    # Log HTTP request
-    logging.info(http_request_log_message)
+    # Log the appropriate message based on the current mode
     if error_mode:
+        logging.info(error_log_message)
         return jsonify(message=http_500_message), 500
-    return jsonify(message=http_ok_message), 200
+    else:
+        logging.info(log_message)
+        return jsonify(message=http_ok_message), 200
 
 @app.route('/on')
 def enable_error_mode():
