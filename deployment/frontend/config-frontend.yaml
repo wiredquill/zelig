@@ -1,0 +1,10 @@
+server_name: "Frontend Service"
+log_message: "Frontend is running smoothly."
+error_log_message: "Frontend is experiencing issues."
+log_interval: 60
+http_ok_message: "Frontend OK"
+http_500_message: "Frontend Error"
+http_request_log_message: "Request received on frontend"
+http_500_activate_log_message: "Frontend error mode activated"
+http_500_deactivate_log_message: "Frontend error mode deactivated"
+initial_error_mode: false

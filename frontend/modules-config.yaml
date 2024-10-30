@@ -1,0 +1,13 @@
+modules:
+  ai-model:
+    url: "http://ai-model:8080"
+    status: "Unknown"
+  point-of-sale:
+    url: "http://point-of-sale:8080"
+    status: "Unknown"
+  3d-printer:
+    url: "http://3d-printer:8080"
+    status: "Unknown"
+  ai-database:
+    url: "http://ai-database:8080"
+    status: "Unknown"
