@@ -5,6 +5,11 @@ import schedule
 import threading
 import yaml
 from pyfiglet import Figlet
+import logging
+import sys
+
+# Configure logging to stdout
+logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(message)s')
 
 # Load configuration
 with open("config.yaml", "r") as file:
