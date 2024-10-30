@@ -1,0 +1,3 @@
+# config.yaml
+server_name: "My Cool Server"
+log_message: "This is a periodic log message."
