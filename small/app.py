@@ -11,9 +11,15 @@ import sys
 with open("config.yaml", "r") as file:
     config = yaml.safe_load(file)
 
+# Load configurable values
 server_name = config.get("server_name", "Default Server")
 log_message = config.get("log_message", "Default log message.")
-log_interval = config.get("log_interval", 60)  # Default to 60 seconds if not specified
+log_interval = config.get("log_interval", 60)  # Default to 60 seconds
+http_ok_message = config.get("http_ok_message", "ok")  # Default HTTP OK message
+http_500_message = config.get("http_500_message", "Internal Server Error")  # Default 500 error message
+http_request_log_message = config.get("http_request_log_message", "HTTP request received at root path")
+http_500_activate_log_message = config.get("http_500_activate_log_message", "500 error mode activated")
+http_500_deactivate_log_message = config.get("http_500_deactivate_log_message", "500 error mode deactivated")
 error_mode = False
 
 # Configure logging to stdout
@@ -42,20 +48,26 @@ def run_scheduler():
 @app.route('/')
 def root():
     global error_mode
+    # Log HTTP request
+    logging.info(http_request_log_message)
     if error_mode:
-        return "Internal Server Error", 500
-    return jsonify(message="ok"), 200
+        return jsonify(message=http_500_message), 500
+    return jsonify(message=http_ok_message), 200
 
 @app.route('/500')
 def set_error_mode():
     global error_mode
     error_mode = True
+    # Log 500 error mode activation
+    logging.info(http_500_activate_log_message)
     return jsonify(message="500 mode activated"), 200
 
 @app.route('/stop500')
 def stop_error_mode():
     global error_mode
     error_mode = False
+    # Log 500 error mode deactivation
+    logging.info(http_500_deactivate_log_message)
     return jsonify(message="500 mode deactivated"), 200
 
 if __name__ == "__main__":
