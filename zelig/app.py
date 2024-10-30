@@ -4,12 +4,16 @@ import time
 import schedule
 import threading
 import yaml
+import os
 from pyfiglet import Figlet
 import sys
 
-# Load configuration
-with open("config.yaml", "r") as file:
-    config = yaml.safe_load(file)
+# Initial configuration load
+def load_config():
+    with open("config.yaml", "r") as file:
+        return yaml.safe_load(file)
+
+config = load_config()
 
 # Load configurable values
 server_name = config.get("server_name", "Default Server")
@@ -22,6 +26,10 @@ http_500_activate_log_message = config.get("http_500_activate_log_message", "500
 http_500_deactivate_log_message = config.get("http_500_deactivate_log_message", "500 error mode deactivated")
 initial_error_mode = config.get("initial_error_mode", False)  # Default to False if not specified
 error_mode = initial_error_mode  # Set initial error mode based on config
+
+# Track config file modification time
+config_path = "config.yaml"
+last_modified_time = os.path.getmtime(config_path)
 
 # Configure logging to stdout
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -44,6 +52,28 @@ def run_scheduler():
     while True:
         schedule.run_pending()
         time.sleep(1)
+
+# Check for config updates
+def check_config_updates():
+    global error_mode, last_modified_time
+
+    # Check if the config file has been modified
+    current_modified_time = os.path.getmtime(config_path)
+    if current_modified_time != last_modified_time:
+        last_modified_time = current_modified_time
+        new_config = load_config()
+
+        # Update error mode based on new config
+        new_error_mode = new_config.get("initial_error_mode", False)
+        if new_error_mode != error_mode:
+            error_mode = new_error_mode
+            logging.info(f"Error mode updated to {'enabled' if error_mode else 'disabled'} due to config change")
+
+# Start a separate thread for checking config updates
+def start_config_watcher():
+    while True:
+        check_config_updates()
+        time.sleep(5)  # Check every 5 seconds
 
 # HTTP Routes
 @app.route('/')
@@ -82,6 +112,10 @@ if __name__ == "__main__":
     # Start the scheduler in a separate thread
     scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
     scheduler_thread.start()
+
+    # Start the config watcher in a separate thread
+    config_watcher_thread = threading.Thread(target=start_config_watcher, daemon=True)
+    config_watcher_thread.start()
 
     # Start the Flask server
     app.run(host="0.0.0.0", port=8080)
