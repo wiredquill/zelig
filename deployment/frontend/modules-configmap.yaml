@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: modules-config
+  name: frontend-modules-config
   namespace: zelig
 data:
   modules-config.yaml: |

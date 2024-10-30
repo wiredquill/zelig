@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: point-of-sale
+  name: frontend
   namespace: zelig
 spec:
   selector:
-    app: point-of-sale
+    app: frontend
   ports:
     - protocol: TCP
       port: 8080

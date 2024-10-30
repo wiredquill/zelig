@@ -2,3 +2,4 @@ flask
 pyyaml
 schedule
 pyfiglet
+requests==2.26.0
