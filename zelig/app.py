@@ -23,8 +23,8 @@ log_interval = config.get("log_interval", 60)  # Default to 60 seconds
 http_ok_message = config.get("http_ok_message", "ok")  # Default HTTP OK message
 http_500_message = config.get("http_500_message", "Internal Server Error")  # Default 500 error message
 http_request_log_message = config.get("http_request_log_message", "HTTP request received at root path")
-http_500_activate_log_message = config.get("http_500_activate_log_message", "500 error mode activated")
-http_500_deactivate_log_message = config.get("http_500_deactivate_log_message", "500 error mode deactivated")
+http_on_log_message = config.get("http_500_activate_log_message", "Error mode activated")
+http_off_log_message = config.get("http_500_deactivate_log_message", "Error mode deactivated")
 initial_error_mode = config.get("initial_error_mode", False)  # Default to False if not specified
 error_mode = initial_error_mode  # Set initial error mode based on config
 
@@ -89,21 +89,21 @@ def root():
         return jsonify(message=http_500_message), 500
     return jsonify(message=http_ok_message), 200
 
-@app.route('/500')
-def set_error_mode():
+@app.route('/on')
+def enable_error_mode():
     global error_mode
     error_mode = True
-    # Log 500 error mode activation
-    logging.info(http_500_activate_log_message)
-    return jsonify(message="500 mode activated"), 200
+    # Log error mode activation
+    logging.info(http_on_log_message)
+    return jsonify(message="Error mode activated"), 200
 
-@app.route('/stop500')
-def stop_error_mode():
+@app.route('/off')
+def disable_error_mode():
     global error_mode
     error_mode = False
-    # Log 500 error mode deactivation
-    logging.info(http_500_deactivate_log_message)
-    return jsonify(message="500 mode deactivated"), 200
+    # Log error mode deactivation
+    logging.info(http_off_log_message)
+    return jsonify(message="Error mode deactivated"), 200
 
 if __name__ == "__main__":
     # Display ASCII server name on startup
@@ -111,7 +111,7 @@ if __name__ == "__main__":
 
     # Log initial error mode state if active
     if error_mode:
-        logging.info("Application started in 500 error mode")
+        logging.info("Application started in error mode")
 
     # Start the scheduler in a separate thread
     scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
