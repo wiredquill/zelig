@@ -9,3 +9,6 @@ http_500_message: "Internal Server Error"  # Message for /500 mode responses
 http_request_log_message: "HTTP request received at root path"
 http_500_activate_log_message: "500 error mode activated"
 http_500_deactivate_log_message: "500 error mode deactivated"
+
+# Set mode
+error_mode: "off"    # Turn of for 500 mode
