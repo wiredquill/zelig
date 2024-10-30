@@ -8,6 +8,9 @@ RUN pip3 install -r requirements.txt
 COPY app.py .
 COPY modules-config.yaml .
 
+# Copy the templates directory for HTML files
+COPY templates/ ./templates/
+
 # Expose the application port
 EXPOSE 8080
 

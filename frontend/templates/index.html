@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Module Status Dashboard</title>
+</head>
+<body>
+    <h1>Module Status Dashboard</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Module</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for name, module in modules.items() %}
+            <tr>
+                <td>{{ name }}</td>
+                <td>{{ module.status }}</td>
+                <td>
+                    <a href="{{ url_for('toggle', module_name=name) }}">
+                        Toggle to {{ 'Error' if module.status == 'Normal' else 'Normal' }}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
