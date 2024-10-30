@@ -1,3 +1,4 @@
 # config.yaml
-server_name: "My Cool Server"
-log_message: "This is a periodic log message."
+server_name: "Database Server"
+log_message: "Record updated"
+log_interval: 60  # Interval in seconds

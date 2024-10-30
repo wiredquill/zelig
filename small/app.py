@@ -5,11 +5,7 @@ import schedule
 import threading
 import yaml
 from pyfiglet import Figlet
-import logging
 import sys
-
-# Configure logging to stdout
-logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(message)s')
 
 # Load configuration
 with open("config.yaml", "r") as file:
@@ -17,10 +13,11 @@ with open("config.yaml", "r") as file:
 
 server_name = config.get("server_name", "Default Server")
 log_message = config.get("log_message", "Default log message.")
+log_interval = config.get("log_interval", 60)  # Default to 60 seconds if not specified
 error_mode = False
 
-# Setup logging
-logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+# Configure logging to stdout
+logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(message)s')
 app = Flask(__name__)
 
 # ASCII Art for server name
@@ -28,12 +25,12 @@ def display_server_name():
     figlet = Figlet(font="slant")
     print(figlet.renderText(server_name))
 
-# Periodic logging
+# Periodic logging function
 def log_message_periodically():
     logging.info(log_message)
 
-# Schedule periodic logging every 60 seconds
-schedule.every(60).seconds.do(log_message_periodically)
+# Schedule periodic logging based on config interval
+schedule.every(log_interval).seconds.do(log_message_periodically)
 
 # Run scheduled tasks
 def run_scheduler():
