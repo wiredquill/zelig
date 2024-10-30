@@ -20,7 +20,8 @@ http_500_message = config.get("http_500_message", "Internal Server Error")  # De
 http_request_log_message = config.get("http_request_log_message", "HTTP request received at root path")
 http_500_activate_log_message = config.get("http_500_activate_log_message", "500 error mode activated")
 http_500_deactivate_log_message = config.get("http_500_deactivate_log_message", "500 error mode deactivated")
-error_mode = False
+initial_error_mode = config.get("initial_error_mode", False)  # Default to False if not specified
+error_mode = initial_error_mode  # Set initial error mode based on config
 
 # Configure logging to stdout
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -73,6 +74,10 @@ def stop_error_mode():
 if __name__ == "__main__":
     # Display ASCII server name on startup
     display_server_name()
+
+    # Log initial error mode state if active
+    if error_mode:
+        logging.info("Application started in 500 error mode")
 
     # Start the scheduler in a separate thread
     scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
