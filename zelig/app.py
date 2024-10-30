@@ -18,6 +18,7 @@ config = load_config()
 # Load configurable values
 server_name = config.get("server_name", "Default Server")
 log_message = config.get("log_message", "Default log message.")
+error_log_message = config.get("error_log_message", "Default error log message.")  # Log message for error mode
 log_interval = config.get("log_interval", 60)  # Default to 60 seconds
 http_ok_message = config.get("http_ok_message", "ok")  # Default HTTP OK message
 http_500_message = config.get("http_500_message", "Internal Server Error")  # Default 500 error message
@@ -40,9 +41,12 @@ def display_server_name():
     figlet = Figlet(font="slant")
     print(figlet.renderText(server_name))
 
-# Periodic logging function
+# Periodic logging function with conditional error mode check
 def log_message_periodically():
-    logging.info(log_message)
+    if error_mode:
+        logging.info(error_log_message)
+    else:
+        logging.info(log_message)
 
 # Schedule periodic logging based on config interval
 schedule.every(log_interval).seconds.do(log_message_periodically)
@@ -53,7 +57,7 @@ def run_scheduler():
         schedule.run_pending()
         time.sleep(1)
 
-# Check for config updates
+# Check for config updates and apply changes to error_mode dynamically
 def check_config_updates():
     global error_mode, last_modified_time
 

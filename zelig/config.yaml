@@ -1,6 +1,7 @@
 # config.yaml
 server_name: "My Cool Server"
 log_message: "This is a periodic log message."
+error_log_message: "This is an error log message."  # New error log message for error mode
 log_interval: 60  # Interval in seconds
 http_ok_message: "ok"  # Message for root path responses
 http_500_message: "Internal Server Error"  # Message for /500 mode responses
