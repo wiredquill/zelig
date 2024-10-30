@@ -4,6 +4,37 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Module Status Dashboard</title>
+    <style>
+        .button-on {
+            background-color: green;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+        }
+        .button-off {
+            background-color: red;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+        }
+        .button-disabled {
+            background-color: grey;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: not-allowed;
+        }
+        .send-request {
+            padding: 5px 10px;
+            margin-right: 10px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <h1>Module Status Dashboard</h1>
@@ -12,7 +43,8 @@
             <tr>
                 <th>Module</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th>Actions</th>
+                <th>Failure Mode</th>
             </tr>
         </thead>
         <tbody>
@@ -21,9 +53,23 @@
                 <td>{{ name }}</td>
                 <td>{{ module.status }}</td>
                 <td>
-                    <a href="{{ url_for('toggle', module_name=name) }}">
-                        Toggle to {{ 'Error' if module.status == 'Normal' else 'Normal' }}
-                    </a>
+                    <!-- Send Request Button -->
+                    <form action="{{ url_for('send_request', module_name=name) }}" method="post" style="display:inline;">
+                        <button type="submit" class="send-request">Send Request</button>
+                    </form>
+                </td>
+                <td>
+                    <!-- Toggle Failure Mode Buttons -->
+                    <form action="{{ url_for('toggle', module_name=name) }}" method="post" style="display:inline;">
+                        <button type="submit" name="action" value="on" 
+                            class="{% if module.status == 'Normal' %}button-on{% else %}button-disabled{% endif %}">
+                            On
+                        </button>
+                        <button type="submit" name="action" value="off" 
+                            class="{% if module.status == 'Error' %}button-off{% else %}button-disabled{% endif %}">
+                            Off
+                        </button>
+                    </form>
                 </td>
             </tr>
             {% endfor %}
