@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, redirect, url_for
+from flask import Flask, jsonify, render_template, redirect, url_for, request
 import requests
 import threading
 import time
@@ -16,10 +16,10 @@ def load_module_config():
 modules = load_module_config()
 
 # Function to toggle mode of a module
-def toggle_module_mode(module_name):
+def toggle_module_mode(module_name, action):
     module = modules.get(module_name)
     if module:
-        toggle_url = f"{module['url']}/on" if module["status"] == "Normal" else f"{module['url']}/off"
+        toggle_url = f"{module['url']}/on" if action == "on" else f"{module['url']}/off"
         try:
             requests.get(toggle_url, timeout=5)
             return True
@@ -40,10 +40,23 @@ def update_status():
                 module["status"] = "Unknown"
         time.sleep(60)
 
-# Endpoint to toggle mode
-@app.route("/toggle/<module_name>")
+# Endpoint to send a request to the service (simulating "Send Request")
+@app.route("/send_request/<module_name>", methods=["POST"])
+def send_request(module_name):
+    module = modules.get(module_name)
+    if module:
+        try:
+            # Sending a dummy request to the root path
+            requests.get(module["url"], timeout=5)
+        except requests.RequestException:
+            pass
+    return redirect(url_for("index"))
+
+# Endpoint to toggle failure mode
+@app.route("/toggle/<module_name>", methods=["POST"])
 def toggle(module_name):
-    if toggle_module_mode(module_name):
+    action = request.form.get("action")
+    if toggle_module_mode(module_name, action):
         return redirect(url_for("index"))
     return "Failed to toggle mode", 500
 
