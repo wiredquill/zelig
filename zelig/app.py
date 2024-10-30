@@ -111,9 +111,9 @@ if __name__ == "__main__":
     # Display ASCII server name on startup
     display_server_name()
 
-    # Log initial error mode state if active
-    if error_mode:
-        logging.info("Application started in error mode")
+    # Log the initial state of error mode after the ASCII art
+    initial_state = "Error mode is enabled" if error_mode else "Error mode is disabled"
+    logging.info(f"Initial state: {initial_state}")
 
     # Start the scheduler in a separate thread
     scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
