@@ -3,7 +3,7 @@ FROM registry.suse.com/bci/python:3.12
 
 # Install required packages
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 # Copy application files
 COPY app.py .
@@ -13,4 +13,4 @@ COPY config.yaml .
 EXPOSE 8080
 
 # Run the application
-CMD ["python", "app.py"]
+CMD ["python3", "app.py"]
