@@ -25,7 +25,10 @@ def toggle_module_mode(module_name, action):
         toggle_url = f"{module['url']}/on" if action == "on" else f"{module['url']}/off"
         try:
             response = requests.get(toggle_url, timeout=5)
-            module["last_message"] = response.text if response.status_code == 200 else "Error"
+            if response.status_code == 200:
+                module["last_message"] = response.json().get("message", "No message")
+            else:
+                module["last_message"] = "Error"
             return True
         except requests.RequestException:
             module["last_message"] = "Failed to connect"
@@ -37,8 +40,12 @@ def update_status():
         for name, module in modules.items():
             try:
                 response = requests.get(module["url"], timeout=5)
-                module["status"] = "Normal" if response.status_code == 200 else "Error"
-                module["last_message"] = response.text if response.status_code == 200 else "Error"
+                if response.status_code == 200:
+                    module["status"] = "Normal"
+                    module["last_message"] = response.json().get("message", "No message")
+                else:
+                    module["status"] = "Error"
+                    module["last_message"] = response.json().get("message", "Error")
             except requests.RequestException:
                 module["status"] = "Unknown"
                 module["last_message"] = "No connection"
@@ -51,7 +58,10 @@ def send_request(module_name):
     if module:
         try:
             response = requests.get(module["url"], timeout=5)
-            module["last_message"] = response.text if response.status_code == 200 else "Error"
+            if response.status_code == 200:
+                module["last_message"] = response.json().get("message", "No message")
+            else:
+                module["last_message"] = "Error"
         except requests.RequestException:
             module["last_message"] = "Failed to connect"
     return redirect(url_for("index"))
