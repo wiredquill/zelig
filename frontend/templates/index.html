@@ -5,53 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Module Status Dashboard</title>
     <style>
-        .button-fail {
-            background-color: red;
-            color: white;
-            padding: 5px 10px;
+        /* Table Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #EFEFEF; /* Fog */
+            color: #0C322C; /* Pine Green */
+            margin: 20px;
+        }
+        h1 {
+            color: #192072; /* Midnight Blue */
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #FFFFFF; /* White */
+        }
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #DDD;
+        }
+        th {
+            background-color: #0C322C; /* Pine Green */
+            color: #FFFFFF; /* White */
+        }
+        td {
+            color: #0C322C; /* Pine Green */
+        }
+
+        /* Button Styles */
+        .button-fail, .button-restore, .send-request {
             border: none;
+            color: #FFFFFF;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
             cursor: pointer;
+            border-radius: 15px;
+        }
+        .button-fail {
+            background-color: #FE7C3F; /* Persimmon */
         }
         .button-restore {
-            background-color: green;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
+            background-color: #30BA78; /* Jungle Green */
         }
         .button-disabled {
-            background-color: grey;
-            color: white;
-            padding: 5px 10px;
-            border: none;
+            background-color: #EFEFEF; /* Fog */
+            color: #0C322C; /* Pine Green */
             cursor: not-allowed;
         }
         .send-request {
-            padding: 5px 10px;
-            margin-right: 10px;
-            background-color: blue;
-            color: white;
-            border: none;
-            cursor: pointer;
+            background-color: #2453FF; /* Waterhole Blue */
         }
     </style>
 </head>
 <body>
     <h1>Module Status Dashboard</h1>
-    <table border="1">
+    <table>
         <thead>
             <tr>
                 <th>Module</th>
-                <th>Status</th>
                 <th>Actions</th>
                 <th>Failure Mode</th>
+                <th>Last Message</th>
             </tr>
         </thead>
         <tbody>
             {% for name, module in modules.items() %}
             <tr>
-                <td>{{ name }}</td>
-                <td>{{ module.status }}</td>
+                <td><strong>{{ name }}</strong></td>
                 <td>
                     <!-- Send Request Button -->
                     <form action="{{ url_for('send_request', module_name=name) }}" method="post" style="display:inline;">
@@ -71,6 +97,7 @@
                         </button>
                     </form>
                 </td>
+                <td>{{ module.last_message if module.last_message else "No message received" }}</td>
             </tr>
             {% endfor %}
         </tbody>
