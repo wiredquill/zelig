@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Module Status Dashboard</title>
     <style>
-        .button-on {
-            background-color: green;
+        .button-fail {
+            background-color: red;
             color: white;
             padding: 5px 10px;
             border: none;
             cursor: pointer;
         }
-        .button-off {
-            background-color: red;
+        .button-restore {
+            background-color: green;
             color: white;
             padding: 5px 10px;
             border: none;
@@ -62,12 +62,12 @@
                     <!-- Toggle Failure Mode Buttons -->
                     <form action="{{ url_for('toggle', module_name=name) }}" method="post" style="display:inline;">
                         <button type="submit" name="action" value="on" 
-                            class="{% if module.status == 'Normal' %}button-on{% else %}button-disabled{% endif %}">
-                            On
+                            class="{% if module.status == 'Normal' %}button-fail{% else %}button-disabled{% endif %}">
+                            Fail
                         </button>
                         <button type="submit" name="action" value="off" 
-                            class="{% if module.status == 'Error' %}button-off{% else %}button-disabled{% endif %}">
-                            Off
+                            class="{% if module.status == 'Error' %}button-restore{% else %}button-disabled{% endif %}">
+                            Restore
                         </button>
                     </form>
                 </td>
