@@ -10,6 +10,9 @@ app = Flask(__name__)
 def load_module_config():
     with open("modules-config.yaml", "r") as file:
         config = yaml.safe_load(file)
+    # Initialize each module's last_message to "No message received"
+    for module in config["modules"].values():
+        module["last_message"] = "No message received"
     return config["modules"]
 
 # Initialize modules from config file
@@ -21,9 +24,11 @@ def toggle_module_mode(module_name, action):
     if module:
         toggle_url = f"{module['url']}/on" if action == "on" else f"{module['url']}/off"
         try:
-            requests.get(toggle_url, timeout=5)
+            response = requests.get(toggle_url, timeout=5)
+            module["last_message"] = response.text if response.status_code == 200 else "Error"
             return True
         except requests.RequestException:
+            module["last_message"] = "Failed to connect"
             return False
 
 # Background job to update status every 60 seconds
@@ -32,12 +37,11 @@ def update_status():
         for name, module in modules.items():
             try:
                 response = requests.get(module["url"], timeout=5)
-                if response.status_code == 200:
-                    module["status"] = "Normal"
-                elif response.status_code == 500:
-                    module["status"] = "Error"
+                module["status"] = "Normal" if response.status_code == 200 else "Error"
+                module["last_message"] = response.text if response.status_code == 200 else "Error"
             except requests.RequestException:
                 module["status"] = "Unknown"
+                module["last_message"] = "No connection"
         time.sleep(60)
 
 # Endpoint to send a request to the service (simulating "Send Request")
@@ -46,10 +50,10 @@ def send_request(module_name):
     module = modules.get(module_name)
     if module:
         try:
-            # Sending a dummy request to the root path
-            requests.get(module["url"], timeout=5)
+            response = requests.get(module["url"], timeout=5)
+            module["last_message"] = response.text if response.status_code == 200 else "Error"
         except requests.RequestException:
-            pass
+            module["last_message"] = "Failed to connect"
     return redirect(url_for("index"))
 
 # Endpoint to toggle failure mode

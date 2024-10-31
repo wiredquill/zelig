@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Module Status Dashboard</title>
     <style>
-        /* Table Styles */
+        /* Table and Page Styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #EFEFEF; /* Fog */
@@ -30,9 +30,6 @@
             background-color: #0C322C; /* Pine Green */
             color: #FFFFFF; /* White */
         }
-        td {
-            color: #0C322C; /* Pine Green */
-        }
 
         /* Button Styles */
         .button-fail, .button-restore, .send-request {
@@ -46,6 +43,7 @@
             margin: 4px 2px;
             cursor: pointer;
             border-radius: 15px;
+            width: 100px;
         }
         .button-fail {
             background-color: #FE7C3F; /* Persimmon */
@@ -88,16 +86,16 @@
                     <!-- Toggle Failure Mode Buttons -->
                     <form action="{{ url_for('toggle', module_name=name) }}" method="post" style="display:inline;">
                         <button type="submit" name="action" value="on" 
-                            class="{% if module.status == 'Normal' %}button-fail{% else %}button-disabled{% endif %}">
+                            class="button-fail {% if module.status != 'Normal' %}button-disabled{% endif %}">
                             Fail
                         </button>
                         <button type="submit" name="action" value="off" 
-                            class="{% if module.status == 'Error' %}button-restore{% else %}button-disabled{% endif %}">
+                            class="button-restore {% if module.status != 'Error' %}button-disabled{% endif %}">
                             Restore
                         </button>
                     </form>
                 </td>
-                <td>{{ module.last_message if module.last_message else "No message received" }}</td>
+                <td>{{ module.last_message }}</td>
             </tr>
             {% endfor %}
         </tbody>
