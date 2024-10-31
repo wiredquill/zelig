@@ -52,9 +52,8 @@
             background-color: #30BA78; /* Jungle Green */
         }
         .button-disabled {
-            background-color: #EFEFEF; /* Fog */
-            color: #0C322C; /* Pine Green */
             cursor: not-allowed;
+            opacity: 0.6;
         }
         .send-request {
             background-color: #2453FF; /* Waterhole Blue */
@@ -83,14 +82,16 @@
                     </form>
                 </td>
                 <td>
-                    <!-- Toggle Failure Mode Buttons -->
+                    <!-- Consistent Color Buttons with Disabled State -->
                     <form action="{{ url_for('toggle', module_name=name) }}" method="post" style="display:inline;">
                         <button type="submit" name="action" value="on" 
-                            class="button-fail {% if module.status != 'Normal' %}button-disabled{% endif %}">
+                            class="button-fail" 
+                            {% if module.status != 'Normal' %}disabled{% endif %}>
                             Fail
                         </button>
                         <button type="submit" name="action" value="off" 
-                            class="button-restore {% if module.status != 'Error' %}button-disabled{% endif %}">
+                            class="button-restore" 
+                            {% if module.status != 'Error' %}disabled{% endif %}>
                             Restore
                         </button>
                     </form>
