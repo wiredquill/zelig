@@ -10,15 +10,14 @@ app = Flask(__name__)
 def load_module_config():
     with open("modules-config.yaml", "r") as file:
         config = yaml.safe_load(file)
-    # Initialize each module's last_message to "No message received"
     for module in config["modules"].values():
         module["last_message"] = "No message received"
     return config["modules"]
 
-# Initialize modules from config file
+# Initialize modules
 modules = load_module_config()
 
-# Function to toggle mode of a module
+# Function to toggle mode of a module with status updates
 def toggle_module_mode(module_name, action):
     module = modules.get(module_name)
     if module:
@@ -26,13 +25,15 @@ def toggle_module_mode(module_name, action):
         try:
             response = requests.get(toggle_url, timeout=5)
             if response.status_code == 200:
+                # Update the last message and status after successful toggle
                 module["last_message"] = response.json().get("message", "No message")
+                module["status"] = "Normal" if action == "off" else "Error"
             else:
-                module["last_message"] = "Error"
-            return True
+                module["last_message"] = "Error while toggling mode"
         except requests.RequestException:
             module["last_message"] = "Failed to connect"
             return False
+    return True
 
 # Background job to update status every 60 seconds
 def update_status():
@@ -51,17 +52,14 @@ def update_status():
                 module["last_message"] = "No connection"
         time.sleep(60)
 
-# Endpoint to send a request to the service (simulating "Send Request")
+# Endpoint to send a request to the service
 @app.route("/send_request/<module_name>", methods=["POST"])
 def send_request(module_name):
     module = modules.get(module_name)
     if module:
         try:
             response = requests.get(module["url"], timeout=5)
-            if response.status_code == 200:
-                module["last_message"] = response.json().get("message", "No message")
-            else:
-                module["last_message"] = "Error"
+            module["last_message"] = response.json().get("message", "No message") if response.status_code == 200 else "Error"
         except requests.RequestException:
             module["last_message"] = "Failed to connect"
     return redirect(url_for("index"))
@@ -79,7 +77,7 @@ def toggle(module_name):
 def index():
     return render_template("index.html", modules=modules)
 
-# Start the background status updater
+# Start background status updater
 status_thread = threading.Thread(target=update_status, daemon=True)
 status_thread.start()
 
