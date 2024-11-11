@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: printer-3d
-        image: erin/zelig:latest
+        image: ghcr.io/suse-technical-marketing/zelig:latest
         ports:
           - containerPort: 8080
         volumeMounts:
